@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="/css/default.css"/>
+        <h:outputStylesheet name="/css/cssLayout.css"/>
+      <!--  <link type="text/css" rel="stylesheet" href="/project/faces/javax.faces.resource/theme.css?ln=primefaces-glass-x" />-->
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+
+        <div id="top">
+            <ui:insert name="top">
+
+        <h2>Bienvenido : ${request.userPrincipal.name}</h2>                
+                
+            <h:form>
+            <p:menubar>
+                <p:menuitem value="Home" url="/faces/index.xhtml" icon="ui-icon-home" />
+                <p:submenu label="Vuelos" icon="ui-icon-folder-open">
+                    <p:menuitem value="Consular Vuelos" icon="ui-icon-search" url="/vuelo/Vuelos.xhtml?faces-redirect=true" />
+                    <p:menuitem value="Reservar Vuelos" icon="ui-icon-search" url="/reservacion/reservacion.xhtml?faces-redirect=true" />                    
+                    <p:menuitem value="Nuevo Vuelo" url="/vuelo/VueloNuevo.xhtml?faces-redirect=true" icon="ui-icon-document"/>
+                </p:submenu>
+
+            </p:menubar>
+            </h:form>
+            </ui:insert>
+        </div>
+
+        <div id="content" class="center_content">
+            <ui:insert name="content">
+                
+            </ui:insert>
+        </div>
+
+        <div id="bottom" >
+            <ui:insert name="bottom">
+            <p:menubar>
+                <f:facet name="options" >
+
+            <h2 class="color:blue"><a href="${request.contextPath}/salir" > Salir</a></h2>                         
+                </f:facet>
+            </p:menubar>                
+                
+                
+            </ui:insert>
+
+        </div>            
+    </h:body>
+
+</html>

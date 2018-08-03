@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template/miTemplate.xhtml">
+
+            <ui:define name="content">
+                <f:view>
+                    <h:form id="form">
+                        <p:growl id="growl" showDetail="true" sticky="true" />
+                        <h1><h:outputText value="Crear/Editar Vuelo"/></h1>
+                        <h:panelGrid columns="3" id="grid">
+                            <h:outputLabel value="Idvuelo:" for="idvuelo" style="display:none "/>
+                            <p:inputText id="idvuelo" value="#{controlVuelos.vuelo.idvuelo}" readonly="true" title="Idvuelo" style="display:none "/>
+                            <p:message for="idvuelo" />
+                            <h:outputLabel value="Origen:" for="aeropuertoByIdorigen" />
+                            <p:selectOneMenu id="aeropuertoByIdorigen" value="#{controlVuelos.origen.idaeropuerto}" title="AeropuertoByIdorigen" >
+                                <f:selectItem itemLabel="ORIGEN" itemValue="0" />
+                                <f:selectItems value="#{controlVuelos.origenes}" var="o" itemLabel="#{o.aeropuerto}" itemValue="#{o.idaeropuerto}"/>
+                            </p:selectOneMenu>
+                            <p:message for="aeropuertoByIdorigen" />
+                            <h:outputLabel value="Destino:" for="aeropuertoByIddestino" />
+                            <p:selectOneMenu id="aeropuertoByIddestino" value="#{controlVuelos.destino.idaeropuerto}" title="AeropuertoByIddestino" >
+                                <f:selectItem itemLabel="DESTINO" itemValue="0" />
+                                <f:selectItems value="#{controlVuelos.destinos}" var="d" itemLabel="#{d.aeropuerto}" itemValue="#{d.idaeropuerto}"/>
+                            </p:selectOneMenu>
+                            <p:message for="aeropuertoByIddestino" />
+                            <h:outputLabel value="Avion:" for="avion:" />
+                            <h:panelGrid columns="3">
+                                <p:commandButton value="Precione y Seleccion un Avion" type="button" onclick="PF('dlg2').show();" />
+                                <p:inputText id="avion" readonly="" value="#{controlVuelos.avion.idavion}" title="Idvuelo"/>
+                                <p:inputText id="descripcion" readonly="" value="#{controlVuelos.avion.descripcion}" title="Idvuelo"/>
+                            </h:panelGrid>
+                            <p:message for="avion" />
+                            <h:outputLabel value="Fecha:" for="fecha" />
+                            <p:calendar id="fecha" value="#{controlVuelos.vuelo.fecha}" pattern="dd-MM-yyyy" title="Fecha">
+                            </p:calendar>
+                            <p:message for="fecha" />
+                            <h:outputLabel value="Estado:" for="estado" />
+                            <p:selectOneMenu id="estado" value="#{controlVuelos.vuelo.estado}" title="estado">
+                                <f:selectItem itemLabel="SELECCIONE" itemValue="" />
+                                <f:selectItem itemLabel="DISPONIBLE" itemValue="DISPONIBLE" />
+                                <f:selectItem itemLabel="NO DISPONIBLE" itemValue="NO DISPONIBLE" />
+                            </p:selectOneMenu>
+                            <p:message for="estado" />
+                            <h:outputLabel value="Precio:" for="precio" />
+                            <p:inputText id="precio" value="#{controlVuelos.vuelo.precio}" title="Precio" />
+                            <p:message for="precio" />
+                            <p:commandButton value="Guardar" action="#{controlVuelos.guardarVuelo()}" icon="ui-icon-check" ajax="true" update="growl" validateClient="true"/>
+                            <p:commandButton value="Cancelar" immediate="true" icon="ui-icon-close" action="ListadoVuelos.xhtml?faces-redirect=true"/>
+                        </h:panelGrid>
+                        <p:dialog header="Modal Dialog" widgetVar="dlg2" modal="true" height="300">
+                            <p:dataTable  rows="20" paginator="true" value="#{controlVuelos.aviones}" var="item"
+                                          selectionMode="single" selection="#{controlVuelos.avion}" rowKey="#{item.idavion}:">
+                                <f:facet name="header">
+                                    Listado
+                                </f:facet>
+                                <p:ajax event="rowSelect" listener="#{controlVuelos.onRowSelect}" update=":form:avion :form:growl" />
+                                <p:column headerText="ID">
+                                    <h:outputText value="#{item.idavion}" />
+                                </p:column>
+                                <p:column headerText="Avion">
+                                    <h:outputText value="#{item.descripcion}" />
+                                </p:column>
+                                <p:column headerText="Capacidad">
+                                    <h:outputText value="#{item.capacidad}" />
+                                </p:column>                                        
+                            </p:dataTable>
+                            <p:commandButton value="Aceptar" type="button" onclick="PF('dlg2').hide();" />
+                        </p:dialog> 
+                    </h:form>
+                </f:view>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
+
+
