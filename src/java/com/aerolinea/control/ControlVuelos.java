@@ -1,4 +1,3 @@
-
 package com.aerolinea.control;
 
 import com.aerolinea.dao.AeropuertoDaoImpl;
@@ -33,13 +32,17 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 
 
+//@ManagedBean(name="controlVuelos")
 @Controller
-@Scope(value = WebApplicationContext.SCOPE_REQUEST,proxyMode= ScopedProxyMode.TARGET_CLASS)
+@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ControlVuelos implements Serializable {
-    private Vuelo vuelo;
+
+    private Vuelo vuelo = new Vuelo();
     private Aeropuerto origen;
     private Aeropuerto destino;
     private Avion avion;
@@ -53,52 +56,62 @@ public class ControlVuelos implements Serializable {
     private AeropuertoDaoImpl aeropuertoDaoImpl;
     @Autowired
     private AvionDaoImpl avionDaoImpl;
-    
+
     //busqueda
     private Date fecha1;
     private Date fecha2;
     private Integer idorigen;
     private Integer iddestino;
-    
+
     @PostConstruct
-    public void init(){
-        try{
-        vuelo=vueloDaoImpl.create();
-        origen = aeropuertoDaoImpl.create();
-        destino = aeropuertoDaoImpl.create();
-        avion = avionDaoImpl.create();
-        }catch(Exception e){}
+    public void init() {
+        try {
+            vuelo = vueloDaoImpl.create();
+            origen = aeropuertoDaoImpl.create();
+            destino = aeropuertoDaoImpl.create();
+            avion = avionDaoImpl.create();
+
+        } catch (Exception e) {
+        }
     }
-    
+
     public ControlVuelos() {
+       
     }
-  
-    public void onRowSelect(SelectEvent event){
-        vuelo.setAvion(avion);        
-        FacesContext.getCurrentInstance().addMessage(null, 
-        (new FacesMessage("Avion seleccionado", 
-                avion.getDescripcion())));
+
+    public void onRowSelect(SelectEvent event) {
+        vuelo.setAvion(avion);
+        FacesContext.getCurrentInstance().addMessage(null,
+                (new FacesMessage("Avion seleccionado",
+                        avion.getDescripcion())));
+        // avion=this.vuelo.getAvion();
     }
-    public String preparaNuevo(){
-        try{
-        vuelo=vueloDaoImpl.create();
-        origen = aeropuertoDaoImpl.create();   
-        destino = aeropuertoDaoImpl.create();
-        avion = avionDaoImpl.create();
-        }catch(Exception e){}
+
+    public String preparaNuevo() {
+        try {
+            vuelo = vueloDaoImpl.create();
+            origen = aeropuertoDaoImpl.create();
+            destino = aeropuertoDaoImpl.create();
+            avion = avionDaoImpl.create();
+            //avion=this.vuelo.getAvion();
+        } catch (Exception e) {
+        }
         return "VueloNuevo.xhtml?faces-redirect=true";
     }
-    
-    public String guardarVuelo() throws Exception{
+
+    public String guardarVuelo() throws Exception {
         vuelo.setAeropuertoByIddestino(destino);
-        vuelo.setAeropuertoByIdorigen(origen);        
+        vuelo.setAeropuertoByIdorigen(origen);
         vuelo.setAvion(avion);
-        try{
+        System.out.println("****************************************");
+        System.out.println("ESTOY EN GUARDAR VUELO");
+        System.out.println("****************************************");
+        try {
             vueloDaoImpl.saveOrUpdate(vuelo);
-            FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage("Vuelo Agregado Exitosamente","")));
-        }catch(Exception excepcion){
-            
-        }        
+            FacesContext.getCurrentInstance().addMessage(null, (new FacesMessage("Vuelo Agregado Exitosamente", "")));
+        } catch (Exception excepcion) {
+
+        }
         return "Vuelos.xhtml?faces-redirect=true";
     }
 
@@ -133,35 +146,66 @@ public class ControlVuelos implements Serializable {
     public void setAvion(Avion avion) {
         this.avion = avion;
     }
+
     @PreAuthorize("hasAnyRole({'ROLE_ADMIN'})")
-    @PostFilter("hasRole('ROLE_ADMIN')||"+"filterObject.idusuario==principal.username")    
+    @PostFilter("hasRole('ROLE_ADMIN')||" + "filterObject.idusuario==principal.username")
     public List<Vuelo> getVuelos() throws Exception {
-        String o,d;
-        idorigen=idorigen==null?0:idorigen;
-        iddestino=iddestino==null?0:iddestino;
+        String o, d;
+        idorigen = idorigen == null ? 0 : idorigen;
+        iddestino = iddestino == null ? 0 : iddestino;
         vuelos = vueloDaoImpl.listarVuelos(fecha1, fecha2, idorigen, iddestino);
         return vuelos;
     }
-    
+
     @PreAuthorize("hasAnyRole({'ROLE_OTRO','ROLE_ADMIN'})")
-   // @PreFilter("hasRole('ROLE_ADMIN')||"+"targetObject.idusuario==principal.username")
-    public void eliminar (Vuelo v) throws Exception{        
-         //vueloDaoImpl.delete(u.getIdvuelo());        
-       
-        try{
-            vueloDaoImpl.delete(v.getIdvuelo());         
-            FacesContext.getCurrentInstance().addMessage(null,(new FacesMessage("Vuelo Eliminado Exitosamente","")));
-        }catch(Exception excepcion){
-            
-        }        
-        
-    }    
-    
+    // @PreFilter("hasRole('ROLE_ADMIN')||"+"targetObject.idusuario==principal.username")
+    public void eliminar(Vuelo v) throws Exception {
+        //vueloDaoImpl.delete(u.getIdvuelo());        
+
+        try {
+            this.vueloDaoImpl.delete(v.getIdvuelo());
+            //  vueloDaoImpl.delete(v.getIdvuelo());
+            FacesContext.getCurrentInstance().addMessage(null, (new FacesMessage("Vuelo Eliminado Exitosamente", "")));
+        } catch (Exception excepcion) {
+
+        }
+
+    }
+
     @PreAuthorize("hasAnyRole({'ROLE_OTRO','ROLE_ADMIN'})")
-   // @PreFilter("hasRole('ROLE_ADMIN')||"+"targetObject.idusuario==principal.username")
-    public void reservar (Vuelo u) throws Exception{        
-         vueloDaoImpl.delete(u.getIdvuelo());        
-    }      
+    // @PreFilter("hasRole('ROLE_ADMIN')||"+"targetObject.idusuario==principal.username")
+    public String edit(Vuelo vuelo) throws Exception {
+        this.vuelo = vuelo;
+        origen = this.vuelo.getAeropuertoByIdorigen();
+        destino = this.vuelo.getAeropuertoByIddestino();
+        avion = this.vuelo.getAvion();
+        return "editVuelo";
+
+    }
+
+    public String edit() throws Exception {
+
+        vuelo.setAeropuertoByIddestino(destino);
+        vuelo.setAeropuertoByIdorigen(origen);
+        vuelo.setAvion(avion);
+        try {
+            vueloDaoImpl.saveOrUpdate(vuelo);
+            FacesContext.getCurrentInstance().addMessage(null, (new FacesMessage("Vuelo Modificado con Exitosamente", "")));
+        } catch (Exception excepcion) {
+            //FacesContext.getCurrentInstance().addMessage(null, (new FacesMessage(excepcion.getMessage(), "")));             
+            FacesContext.getCurrentInstance().addMessage(null,
+                    (new FacesMessage("Error, no se puede editar",
+                            excepcion.toString())));
+        }
+
+        return "Vuelos.xhtml?faces-redirect=true";
+    }
+
+    @PreAuthorize("hasAnyRole({'ROLE_OTRO','ROLE_ADMIN'})")
+    // @PreFilter("hasRole('ROLE_ADMIN')||"+"targetObject.idusuario==principal.username")
+    public void reservar(Vuelo u) throws Exception {
+        vueloDaoImpl.delete(u.getIdvuelo());
+    }
 
     public void setVuelos(List<Vuelo> vuelos) {
         this.vuelos = vuelos;
@@ -250,7 +294,4 @@ public class ControlVuelos implements Serializable {
         this.iddestino = iddestino;
     }
 
-
-    
 }
-

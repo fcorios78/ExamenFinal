@@ -7,6 +7,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Facelet Title</title>
+        <h:outputStylesheet name="css/jsfcrud.css"/>
     </h:head>
     <h:body>
         <ui:composition template="./template/miTemplate.xhtml">
@@ -81,6 +82,18 @@
             </ui:define>
 
         </ui:composition>
+        <br />
+        <h:link outcome="/vuelo/aeropuerto/List" value="Show All Aeropuerto Items"/>
+        <br />
+        <h:link outcome="/vuelo/avion/List" value="Show All Avion Items"/>
+        <br />
+        <h:link outcome="/vuelo/pais/List" value="Show All Pais Items"/>
+        <br />
+        <h:link outcome="/vuelo/vuelo/List" value="Show All Vuelo Items"/>
     </h:body>
+
+
+
+
 </html>
 

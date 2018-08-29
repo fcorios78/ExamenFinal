@@ -19,30 +19,32 @@ and open the template in the editor.
                 <f:view>
                     <h:form id="form">
                         <p:growl id="growl" showDetail="true" sticky="true" />
-                        <h1><h:outputText value="Crear Vuelo"/></h1>
+                        <h1><h:outputText value="Editar Vuelo"/></h1>
                         <h:panelGrid columns="3" id="grid">
-                            <h:outputLabel value="Idvuelo:" for="idvuelo"  style="display:none "/>
-                            <p:inputText id="idvuelo" value="#{controlVuelos.vuelo.idvuelo}" readonly="true" title="Idvuelo"  style="display:none "/>
+                            <h:outputLabel value="Idvuelo:" for="idvuelo"  />
+                            <p:inputText id="idvuelo" value="#{controlVuelos.vuelo.idvuelo}" title="Idvuelo" />
                             <p:message for="idvuelo" />
                             <h:outputLabel value="Origen:" for="aeropuertoByIdorigen" />
                             <p:selectOneMenu id="aeropuertoByIdorigen" value="#{controlVuelos.origen.idaeropuerto}" title="AeropuertoByIdorigen" >
                                 <f:selectItem itemLabel="ORIGEN" itemValue="0" />
                                 <f:selectItems value="#{controlVuelos.origenes}" var="o" itemLabel="#{o.aeropuerto}" itemValue="#{o.idaeropuerto}"/>
                             </p:selectOneMenu>
-                            <p:message for="aeropuertoByIdorigen" display="#{controlVuelos.origenes}"/>
+                            <p:message for="aeropuertoByIdorigen" />
                             <h:outputLabel value="Destino:" for="aeropuertoByIddestino" />
                             <p:selectOneMenu id="aeropuertoByIddestino" value="#{controlVuelos.destino.idaeropuerto}" title="AeropuertoByIddestino" >
                                 <f:selectItem itemLabel="DESTINO" itemValue="0" />
                                 <f:selectItems value="#{controlVuelos.destinos}" var="d" itemLabel="#{d.aeropuerto}" itemValue="#{d.idaeropuerto}"/>
-                            </p:selectOneMenu>
+                            </p:selectOneMenu>                            
                             <p:message for="aeropuertoByIddestino" />
-                            <h:outputLabel value="Avion:" for="avion" />
+                            
+                            <h:outputLabel value="Avion:" for="avion:" />
                             <h:panelGrid columns="3">
                                 <p:commandButton value="Precione y Seleccion un Avion" type="button" onclick="PF('dlg2').show();" />
-                                <p:inputText id="avion" readonly="" value="#{controlVuelos.avion.idavion}" title="Idvuelo"  style="display:none "/>
+                                <p:inputText id="avion" readonly="" value="#{controlVuelos.avion.idavion}" title="avion" style="display:none"/>
                                 <p:inputText id="descripcion" readonly="" value="#{controlVuelos.avion.descripcion}" title="descripcion"/>
                             </h:panelGrid>
                             <p:message for="avion" />
+                            
                             <h:outputLabel value="Fecha:" for="fecha" />
                             <p:calendar id="fecha" value="#{controlVuelos.vuelo.fecha}" pattern="dd-MM-yyyy" title="Fecha">
                             </p:calendar>
@@ -57,7 +59,8 @@ and open the template in the editor.
                             <h:outputLabel value="Precio:" for="precio" />
                             <p:inputText id="precio" value="#{controlVuelos.vuelo.precio}" title="Precio" />
                             <p:message for="precio" />
-                            <p:commandButton value="Guardar" action="#{controlVuelos.guardarVuelo()}" icon="ui-icon-check" ajax="true" update=":form:grid" validateClient="true"/>
+                            
+                            <p:commandButton value="Guardar" action="#{controlVuelos.edit()}" icon="ui-icon-check" ajax="true" update=":form:growl" validateClient="true"/>
                             <p:commandButton value="Cancelar" immediate="true" icon="ui-icon-close" action="ListadoVuelos.xhtml?faces-redirect=true"/>
                         </h:panelGrid>
                         
@@ -67,7 +70,7 @@ and open the template in the editor.
                                 <f:facet name="header">
                                     Listado
                                 </f:facet>
-                                <p:ajax event="rowSelect" listener="#{controlVuelos.onRowSelect}" update="form:avion form:growl :form:descripcion" />
+                                <p:ajax event="rowSelect" listener="#{controlVuelos.onRowSelect}" update=":form:avion :form:growl :form:descripcion" />
                                 <p:column headerText="ID">
                                     <h:outputText value="#{item.idavion}" />
                                 </p:column>
@@ -80,6 +83,7 @@ and open the template in the editor.
                             </p:dataTable>
                             <p:commandButton value="Aceptar" type="button" onclick="PF('dlg2').hide();" />
                         </p:dialog> 
+                        
                     </h:form>
                 </f:view>
 

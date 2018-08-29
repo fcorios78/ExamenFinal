@@ -9,29 +9,31 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Component;
 
 @Component("VueloDaoImpl")
-public class VueloDaoImpl extends GenericDaoImpl<Vuelo, Integer> implements VueloDao, Serializable{
-    
-    public List<Vuelo> listarVuelos(Date fecha1, Date fecha2, Integer idorigen, 
+public class VueloDaoImpl extends GenericDaoImpl<Vuelo, Integer> implements VueloDao, Serializable {
+
+    public List<Vuelo> listarVuelos(Date fecha1, Date fecha2, Integer idorigen,
             Integer iddestino) throws Exception {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
             String hql = " select v from Vuelo v join fetch v.aeropuertoByIdorigen "
                     + " join fetch v.aeropuertoByIddestino join fetch v.avion "
-+" where v.idvuelo>0 ";
+                    + " where v.idvuelo>0 ";
             System.out.println(hql);
-            if (fecha1!=null && fecha2 !=null)
-                hql+=" and v.fecha between :f1 and :f2";
-                
-            if (iddestino!=0 && idorigen!=0)
-                hql+=" and v.aeropuertoByIdorigen.idaeropuerto = :idorigen and v.aeropuertoByIddestino.idaeropuerto = :iddestino";
-            
+            if (fecha1 != null && fecha2 != null) {
+                hql += " and v.fecha between :f1 and :f2";
+            }
+
+            if (iddestino != 0 && idorigen != 0) {
+                hql += " and v.aeropuertoByIdorigen.idaeropuerto = :idorigen and v.aeropuertoByIddestino.idaeropuerto = :iddestino";
+            }
+
             Query query = session.createQuery(hql);
-            if (fecha1!=null && fecha2 !=null){
+            if (fecha1 != null && fecha2 != null) {
                 query.setParameter("f1", fecha1);
                 query.setParameter("f2", fecha2);
             }
-            if (iddestino!=0 && idorigen!=0){
+            if (iddestino != 0 && idorigen != 0) {
                 query.setParameter("idorigen", idorigen);
                 query.setParameter("iddestino", iddestino);
             }
@@ -46,6 +48,9 @@ public class VueloDaoImpl extends GenericDaoImpl<Vuelo, Integer> implements Vuel
             } catch (Exception exc) {
             }
             throw new RuntimeException(ex);
-        }finally{session.close();}
-    }  
+        } finally {
+            session.close();
+        }
+    }
+
 }

@@ -11,16 +11,15 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T, ID> {
-  
-  
+
     @Autowired
     protected SessionFactory sessionFactory;
-  
+
     private final static Logger LOGGER = Logger.getLogger(GenericDaoImpl.class.getName());
 
     public GenericDaoImpl() {
     }
- 
+
     @Override
     public T create() throws Exception {
         try {
@@ -29,7 +28,8 @@ public class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T,
             throw new RuntimeException(ex);
         }
     }
- 
+     
+
     @Override
     public void saveOrUpdate(T entity) throws Exception {
         Session session = sessionFactory.openSession();
@@ -37,19 +37,42 @@ public class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T,
             session.beginTransaction();
             session.saveOrUpdate(entity);
             session.getTransaction().commit();
-        } 
-        catch (Exception ex) {
+        } catch (Exception ex) {
             try {
                 if (session.getTransaction().isActive()) {
                     session.getTransaction().rollback();
                 }
             } catch (Exception exc) {
-                LOGGER.log(Level.WARNING,"Falló al hacer un rollback", exc);
+                LOGGER.log(Level.WARNING, "Falló al hacer un rollback", exc);
             }
             throw new Exception(ex);
-        }finally{session.close();}
+        } finally {
+            session.close();
+        }
     }
- 
+
+    @Override
+    public T actualizar(T entity)throws Exception {
+        Session session = sessionFactory.openSession();      
+        try {
+            session.beginTransaction();
+            sessionFactory.getCurrentSession().update(entity);
+            session.getTransaction().commit();
+            return entity;
+        } catch (Exception ex) {
+            try {
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().rollback();
+                }
+            } catch (Exception exc) {
+                LOGGER.log(Level.WARNING, "Falló al hacer un rollback", exc);
+            }
+            throw new Exception(ex);
+        } finally {
+            session.close();
+        }
+    }      
+    
     @Override
     public T get(ID id) throws Exception {
         Session session = sessionFactory.openSession();
@@ -59,16 +82,18 @@ public class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T,
             session.getTransaction().commit();
 
             return entity;
-       } catch (Exception ex) {
-           try {
-               if (session.getTransaction().isActive()) {
-                   session.getTransaction().rollback();
-               }
-           } catch (Exception exc) {
-               LOGGER.log(Level.WARNING,"Falló al hacer un rollback", exc);
-           }
-           throw new Exception(ex);
-       }finally{session.close();}
+        } catch (Exception ex) {
+            try {
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().rollback();
+                }
+            } catch (Exception exc) {
+                LOGGER.log(Level.WARNING, "Falló al hacer un rollback", exc);
+            }
+            throw new Exception(ex);
+        } finally {
+            session.close();
+        }
     }
 
     @Override
@@ -79,20 +104,22 @@ public class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T,
             T entity = (T) session.get(getEntityClass(), id);
             if (entity == null) {
                 throw new Exception();
-           }
+            }
             session.delete(entity);
             session.getTransaction().commit();
         } catch (Exception ex) {
             try {
-               if (session.getTransaction().isActive()) {
+                if (session.getTransaction().isActive()) {
                     session.getTransaction().rollback();
-               }
+                }
             } catch (Exception exc) {
-                LOGGER.log(Level.WARNING,"Falló al hacer un rollback", exc);
+                LOGGER.log(Level.WARNING, "Falló al hacer un rollback", exc);
             }
             throw ex;
 
-        } finally{session.close();}
+        } finally {
+            session.close();
+        }
     }
 
     @Override
@@ -110,13 +137,16 @@ public class GenericDaoImpl<T, ID extends Serializable> implements GenericDao<T,
                     session.getTransaction().rollback();
                 }
             } catch (Exception exc) {
-                LOGGER.log(Level.WARNING,"Falló al hacer un rollback", exc);
+                LOGGER.log(Level.WARNING, "Falló al hacer un rollback", exc);
             }
             throw new RuntimeException(ex);
-        }finally{session.close();}
+        } finally {
+            session.close();
+        }
     }
 
     private Class<T> getEntityClass() {
         return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
- }
+
+}
